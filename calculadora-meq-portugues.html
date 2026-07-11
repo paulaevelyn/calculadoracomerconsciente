@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>calculadora-meq-portugues</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem; --space-16: 4rem;
+      --color-bg:#f7f6f2; --color-surface:#f9f8f5; --color-surface-2:#fbfbf9; --color-surface-offset:#f1eee8; --color-border:#d4d1ca; --color-divider:#dcd9d5;
+      --color-text:#28251d; --color-text-muted:#66645f; --color-text-faint:#99958e; --color-text-inverse:#f9f8f4;
+      --color-primary:#284f56; --color-primary-hover:#1d3d43; --color-primary-highlight:#d8e2e1; --color-success:#437a22; --color-warning:#964219; --color-error:#8f3d67; --color-blue:#466f94; --color-purple:#6e5a96;
+      --radius-sm:0.375rem; --radius-md:0.5rem; --radius-lg:0.75rem; --radius-xl:1rem; --radius-full:9999px;
+      --shadow-sm:0 1px 2px oklch(0.2 0.01 80 / 0.06); --shadow-md:0 8px 24px oklch(0.2 0.01 80 / 0.08); --shadow-lg:0 20px 48px oklch(0.2 0.01 80 / 0.12);
+      --font-display:'Cormorant Garamond', Georgia, serif; --font-body:'Satoshi', Inter, sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg:#171614; --color-surface:#1c1b19; --color-surface-2:#201f1d; --color-surface-offset:#23211f; --color-border:#393836; --color-divider:#262523;
+      --color-text:#cdccca; --color-text-muted:#a2a09c; --color-text-faint:#7b7976; --color-text-inverse:#2b2a28;
+      --color-primary:#8fb0b5; --color-primary-hover:#79a0a7; --color-primary-highlight:#313b3b; --color-success:#8bbb67; --color-warning:#d08961; --color-error:#d68ab0; --color-blue:#7aa3c8; --color-purple:#b09ad8;
+      --shadow-sm:0 1px 2px oklch(0 0 0 / 0.2); --shadow-md:0 4px 12px oklch(0 0 0 / 0.3); --shadow-lg:0 12px 32px oklch(0 0 0 / 0.4);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+    body{min-height:100dvh;line-height:1.6;font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:radial-gradient(circle at top right,color-mix(in oklab,var(--color-primary) 8%, transparent),transparent 30%),linear-gradient(180deg,var(--color-bg),var(--color-surface-offset));}
+    img,svg{display:block;max-width:100%} button,input,select,textarea{font:inherit;color:inherit} a,button,input,select,textarea{transition:all 180ms cubic-bezier(.16,1,.3,1)} button{cursor:pointer;border:none}
+    :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
+    .skip-link{position:absolute;left:var(--space-4);top:-100px;background:var(--color-primary);color:var(--color-text-inverse);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);z-index:1000}.skip-link:focus{top:var(--space-4)}
+    .container{max-width:1180px;margin:0 auto;padding:var(--space-4)}
+    header{position:sticky;top:0;backdrop-filter:blur(12px);background:color-mix(in oklab,var(--color-bg) 86%, transparent);border-bottom:1px solid color-mix(in oklab,var(--color-text) 10%, transparent);z-index:50}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-4) 0}
+    .brand{display:flex;align-items:center;gap:var(--space-3)}
+    .brand-lockup{display:flex;align-items:center;gap:var(--space-3);text-decoration:none;color:inherit}
+    .brand-logo{width:min(280px,52vw);height:auto;filter:drop-shadow(0 6px 18px color-mix(in oklab,var(--color-primary) 12%, transparent))}
+    .brand-mark{width:54px;height:54px;object-fit:contain;border-radius:18px;background:var(--color-surface-2);padding:6px;border:1px solid color-mix(in oklab,var(--color-text) 8%, transparent)}
+    .brand h1{font-family:var(--font-display);font-size:var(--text-xl);line-height:1;letter-spacing:.01em;font-weight:600}
+    .brand-meta{display:grid;gap:2px}
+    .brand-site{font-size:var(--text-xs);color:var(--color-text-muted);text-decoration:none}
+    .brand-site:hover{text-decoration:underline;color:var(--color-primary)}
+    .theme-toggle{min-width:44px;min-height:44px;display:grid;place-items:center;border:1px solid color-mix(in oklab,var(--color-text) 12%, transparent);border-radius:var(--radius-full);background:var(--color-surface)}
+    .hero{padding:clamp(var(--space-8),6vw,var(--space-16)) 0 var(--space-8)}
+    .hero-grid,.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-6)}
+    .panel,.results-card,.question-card,.profile-card{background:color-mix(in oklab,var(--color-surface) 95%, transparent);border:1px solid color-mix(in oklab,var(--color-text) 11%, transparent);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm)}
+    .panel,.results-card,.profile-card{padding:var(--space-6)}
+    .eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.12em;color:var(--color-primary);font-weight:700;margin-bottom:var(--space-3)}
+    .hero h2{font-family:var(--font-display);font-size:var(--text-2xl);line-height:1.02;max-width:13ch;margin-bottom:var(--space-4);font-weight:600;letter-spacing:-.01em}
+    .hero p,.note{color:var(--color-text-muted)}
+    .hero-quote{margin-top:var(--space-5);padding-left:var(--space-4);border-left:2px solid color-mix(in oklab,var(--color-primary) 40%, transparent);font-size:var(--text-lg);max-width:32ch}
+    .mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-5)}
+    .mini{padding:var(--space-4);background:var(--color-surface-2);border-radius:var(--radius-lg);border:1px solid color-mix(in oklab,var(--color-text) 8%, transparent)}
+    .mini strong{display:block;font-size:var(--text-sm);margin-bottom:var(--space-2)}
+    .legend{display:grid;gap:var(--space-3)}
+    .legend-item{display:flex;gap:var(--space-3);align-items:flex-start;padding:var(--space-4);background:var(--color-surface-2);border-radius:var(--radius-lg)}
+    .legend-num{width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;background:var(--color-primary-highlight);color:var(--color-primary);font-weight:700;flex:none}
+    main{padding-bottom:var(--space-16)}
+    .layout{align-items:start}
+    .sticky{position:sticky;top:92px;display:grid;gap:var(--space-4)}
+    .section-title{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-4);font-weight:600}
+    .section-intro{margin-bottom:var(--space-5);max-width:64ch}
+    .form-wrap{display:grid;gap:var(--space-4)}
+    .question-card{padding:var(--space-5)}
+    .question-card h3{font-size:var(--text-base);margin-bottom:var(--space-3)}
+    .tag{display:inline-flex;align-items:center;padding:.35rem .7rem;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;background:var(--color-primary-highlight);color:var(--color-primary);margin-bottom:var(--space-3)}
+    .options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-2)}
+    .opt input{position:absolute;opacity:0;pointer-events:none}
+    .opt label{min-height:52px;display:flex;align-items:center;justify-content:center;text-align:center;padding:var(--space-3);background:var(--color-surface-2);border:1px solid color-mix(in oklab,var(--color-text) 10%, transparent);border-radius:var(--radius-md);font-size:var(--text-sm)}
+    .opt input:checked + label{background:var(--color-primary);color:var(--color-text-inverse);border-color:var(--color-primary);box-shadow:var(--shadow-sm)}
+    .results-card{display:grid;gap:var(--space-5)}
+    .score-big{display:flex;align-items:end;gap:var(--space-3)}
+    .score-big .num{font-size:clamp(3rem,2rem + 3vw,5rem);line-height:.9;font-family:var(--font-display);color:var(--color-primary)}
+    .muted{color:var(--color-text-muted)}
+    .meter{height:12px;background:var(--color-surface-offset);border-radius:var(--radius-full);overflow:hidden}
+    .meter > span{display:block;height:100%;width:0%}
+    .dim{display:grid;gap:var(--space-2);padding:var(--space-4);border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px solid color-mix(in oklab,var(--color-text) 8%, transparent)}
+    .dim-top{display:flex;justify-content:space-between;gap:var(--space-4);align-items:center}
+    .badge{font-size:var(--text-xs);font-weight:700;padding:.25rem .55rem;border-radius:var(--radius-full);background:var(--color-surface-offset)}
+    .actions{display:flex;gap:var(--space-3);flex-wrap:wrap}
+    .btn{min-height:46px;padding:0 var(--space-4);border-radius:var(--radius-full);font-weight:700}
+    .btn-primary{background:var(--color-primary);color:var(--color-text-inverse)} .btn-primary:hover{background:var(--color-primary-hover)}
+    .btn-secondary{background:var(--color-surface);border:1px solid color-mix(in oklab,var(--color-text) 12%, transparent)}
+    .callout{padding:var(--space-4);background:color-mix(in oklab,var(--color-primary) 8%, var(--color-surface));border-radius:var(--radius-lg);border:1px solid color-mix(in oklab,var(--color-primary) 22%, transparent)}
+    .profile-fields{display:grid;gap:var(--space-3)}
+    .field{display:grid;gap:var(--space-2)}
+    .field label{font-size:var(--text-sm);font-weight:700}
+    .field input,.field textarea, .field select{width:100%;padding:.85rem 1rem;border-radius:var(--radius-md);border:1px solid color-mix(in oklab,var(--color-text) 12%, transparent);background:var(--color-surface-2)}
+    .field textarea{min-height:96px;resize:vertical}
+    .personalized{display:grid;gap:var(--space-3)}
+    .practice{padding:var(--space-4);border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px solid color-mix(in oklab,var(--color-text) 8%, transparent)}
+    .practice strong{display:block;margin-bottom:var(--space-2)}
+    .site-link-card{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-4);border-radius:var(--radius-lg);background:color-mix(in oklab,var(--color-primary) 8%, var(--color-surface));border:1px solid color-mix(in oklab,var(--color-primary) 18%, transparent)}
+    .site-link-card a{color:var(--color-primary);font-weight:700;text-decoration:none}
+    .site-link-card a:hover{text-decoration:underline}
+    .report{position:fixed;left:-9999px;top:0;width:900px;background:#fff;color:#222;padding:32px;font-family:Arial,sans-serif}
+    .report h1,.report h2{margin-bottom:12px}.report p,.report li{margin-bottom:8px}.report ul{padding-left:20px}
+    @media (max-width: 940px){.hero-grid,.layout{grid-template-columns:1fr}.sticky{position:static}.options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width: 560px){.mini-grid,.options,.actions{grid-template-columns:1fr}.container{padding:var(--space-3)} .panel,.results-card,.question-card,.profile-card{padding:var(--space-4)} .actions{display:grid}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <a class="brand-lockup" href="https://www.psicoterapiaeafins.com.br" target="_blank" rel="noopener noreferrer" aria-label="Abrir site Psicoterapia e Afins">
+          <img class="brand-mark" src="./Logo-so-simbolo.jpg" alt="Símbolo da marca Psicoterapia e Afins" width="54" height="54">
+          <div class="brand-meta">
+            <img class="brand-logo" src="./Logo-nova.jpg" alt="Logo Psicoterapia e Afins" width="440" height="120">
+            <span class="brand-site">www.psicoterapiaeafins.com.br</span>
+          </div>
+        </a>
+      </div>
+      <button class="theme-toggle" data-theme-toggle aria-label="Alternar tema"></button>
+    </div>
+  </header>
+
+  <main id="conteudo" class="container">
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="panel">
+          <div class="eyebrow">Questionário de comer consciente</div>
+          <h2>Uma leitura do comportamento alimentar que não reduz sofrimento a falta de controle.</h2>
+          <p>Esta calculadora foi redesenhada para dialogar com a estratégia editorial da Psicoterapia e Afins: menos moralização, mais contexto, mais regulação e uma leitura clínica que considera ambiente, autocrítica, hiperadaptação e erosão da vida interior.</p>
+          <p class="hero-quote">Você não está sem força. Talvez esteja sem margem.</p>
+          <div class="mini-grid">
+            <div class="mini"><strong>O que ela mede</strong><span class="muted">Consciência alimentar, desinibição, pistas externas, respostas emocionais e distração durante as refeições.</span></div>
+            <div class="mini"><strong>Como ler</strong><span class="muted">O resultado ajuda a observar padrões; não serve para culpar, rotular ou simplificar histórias alimentares complexas.</span></div>
+          </div>
+        </div>
+        <div class="panel legend">
+          <div class="legend-item"><div class="legend-num">1</div><div><strong>Responda sem se testar.</strong><p class="muted">A proposta é mapear padrões atuais, não performar autocontrole.</p></div></div>
+          <div class="legend-item"><div class="legend-num">2</div><div><strong>Leia o contexto.</strong><p class="muted">Pontuações baixas podem refletir saturação, ameaça, pressa, culpa e ambientes pouco reguladores.</p></div></div>
+          <div class="legend-item"><div class="legend-num">3</div><div><strong>Transforme em cuidado.</strong><p class="muted">As sugestões práticas priorizam segurança, ritmo e condições mínimas de presença antes de técnica.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout" aria-label="Questionário e resultados">
+      <section>
+        <div class="profile-card" style="margin-bottom: var(--space-5);">
+          <p class="eyebrow">Dados para relatório</p>
+          <div class="profile-fields">
+            <div class="field"><label for="clientName">Nome da cliente</label><input id="clientName" type="text" placeholder="Ex.: Maria S."></div>
+            <div class="field"><label for="psychologistName">Nome da psicóloga</label><input id="psychologistName" type="text" placeholder="Ex.: Paula Rodrigues"></div>
+            <div class="field"><label for="psychologistEmail">E-mail da psicóloga</label><input id="psychologistEmail" type="email" placeholder="Ex.: contato@psicoterapiaeafins.com"></div>
+            <div class="field"><label for="clinicalNotes">Observações clínicas ou contexto relevante</label><textarea id="clinicalNotes" placeholder="Ex.: histórico de transtorno alimentar, maior perda de controle ao comer fora, rotina com alta demanda, muita autocrítica."></textarea></div>
+          </div>
+        </div>
+
+        <h2 class="section-title">Itens do questionário</h2>
+        <p class="section-intro note">Use a opção que mais se aproxima da frequência com que cada situação acontece atualmente. Em pessoas com história de restrição, rigidez ou transtorno alimentar, observe também o contexto em que o padrão aparece.</p>
+        <form id="meq-form" class="form-wrap"></form>
+      </section>
+
+      <aside class="sticky">
+        <div class="results-card" aria-live="polite">
+          <div>
+            <p class="eyebrow">Resultado automático</p>
+            <div class="score-big"><span class="num" id="overallScore">—</span><span class="muted">/ 4</span></div>
+            <p id="overallText" class="muted">Responda aos itens para visualizar a média geral.</p>
+          </div>
+
+          <div class="callout" id="clinicalFrame">
+            <strong>Leitura clínica sugerida</strong>
+            <p class="note">Em vez de interpretar o comer apenas como falha de disciplina, esta calculadora propõe observar quanto o comportamento está sendo organizado por ameaça, pressa, autocrítica, estímulos externos ou pouca margem interna.</p>
+          </div>
+
+          <div class="callout">
+            <strong>Faixas desta calculadora</strong>
+            <p class="note">1,0–1,9 muito baixo; 2,0–2,7 baixo; 2,8–3,3 moderado; 3,4–4,0 alto. Use as faixas como referência clínica leve, não como diagnóstico.</p>
+          </div>
+
+          <div id="dimensionResults"></div>
+
+          <section class="personalized" id="personalizedPractices">
+            <div class="practice"><strong>Práticas personalizadas</strong><p class="note">As sugestões aparecerão conforme o resultado, combinando a dimensão mais vulnerável com o contexto informado.</p></div>
+          </section>
+
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="calcBtn">Calcular resultado</button>
+            <button type="button" class="btn btn-secondary" id="pdfBtn">Exportar PDF</button>
+            <button type="button" class="btn btn-secondary" id="sendBtn">Enviar para psicóloga</button>
+            <button type="button" class="btn btn-secondary" id="resetBtn">Limpar respostas</button>
+          </div>
+
+          <div class="site-link-card">
+            <div>
+              <strong>Psicoterapia e Afins</strong>
+              <p class="note">Acesse o site para conhecer a clínica, o posicionamento e outros materiais.</p>
+            </div>
+            <a href="https://www.psicoterapiaeafins.com.br" target="_blank" rel="noopener noreferrer">Visitar site</a>
+          </div>
+          <p class="note">Enviar para a psicóloga abre o e-mail padrão do dispositivo com um resumo estruturado. O PDF organiza dados, dimensões e práticas sugeridas para prontuário, devolutiva ou acompanhamento.</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <section id="pdfReport" class="report" aria-hidden="true"></section>
+
+  <script>
+    const items = [
+      {id:1, text:'Estou tão envolvido(a) em outras coisas que não percebo que estou comendo.', dim:'distração', reverse:true},
+      {id:2, text:'Eu paro de comer quando estou satisfeito(a), mesmo quando estou comendo algo de que gosto muito.', dim:'desinibição', reverse:true},
+      {id:3, text:'Percebo quando propagandas ou imagens de comida aumentam minha vontade de comer.', dim:'pistas externas', reverse:false},
+      {id:4, text:'Percebo quando estou comendo só porque a comida está disponível ou à vista.', dim:'pistas externas', reverse:false},
+      {id:5, text:'Quando a porção é muito grande, continuo comendo mesmo depois de satisfeito(a).', dim:'desinibição', reverse:false},
+      {id:6, text:'Como tão rápido que mal noto o sabor da comida.', dim:'distração', reverse:true},
+      {id:7, text:'Em buffets ou festas, tendo a comer mais do que preciso.', dim:'desinibição', reverse:true},
+      {id:8, text:'Percebo quando um contexto, como cinema ou festa, desperta vontade de comer.', dim:'pistas externas', reverse:false},
+      {id:9, text:'Se sobram alimentos de que gosto, continuo comendo mesmo sem fome.', dim:'desinibição', reverse:true},
+      {id:10, text:'Percebo sabores sutis nos alimentos que como.', dim:'consciência alimentar', reverse:false},
+      {id:11, text:'Quando como meus alimentos favoritos, nem sempre percebo quando já foi suficiente.', dim:'desinibição', reverse:true},
+      {id:12, text:'Antes de comer, consigo notar cores, cheiro e apresentação da comida.', dim:'consciência alimentar', reverse:false},
+      {id:13, text:'Quando estou triste, como para me sentir melhor.', dim:'respostas emocionais', reverse:true},
+      {id:14, text:'Percebo quando uma refeição maior me faz sentir pesado(a).', dim:'pistas externas', reverse:false},
+      {id:15, text:'Consigo perceber quando a porção servida é maior do que a minha fome pede.', dim:'desinibição', reverse:false},
+      {id:16, text:'Aprecio a forma como a comida é colocada no prato.', dim:'consciência alimentar', reverse:false},
+      {id:17, text:'Quando estou estressado(a), procuro algo para comer.', dim:'respostas emocionais', reverse:true},
+      {id:18, text:'Se custa pouco a mais, peço a maior porção mesmo sem ter tanta fome.', dim:'desinibição', reverse:true},
+      {id:19, text:'Tenho dificuldade de não comer doces ou salgadinhos quando estão disponíveis.', dim:'respostas emocionais', reverse:true},
+      {id:20, text:'Quando faço uma refeição agradável, percebo se a comida me deixa mais relaxado(a).', dim:'consciência alimentar', reverse:false},
+      {id:21, text:'Saboreio cada garfada ou mordida da refeição.', dim:'consciência alimentar', reverse:false},
+      {id:22, text:'Percebo quando a comida que como afeta meu estado emocional.', dim:'consciência alimentar', reverse:false},
+      {id:23, text:'Em festas com muita comida, percebo quando surge vontade de comer mais do que o necessário.', dim:'pistas externas', reverse:false},
+      {id:24, text:'Reconheço quando estou comendo mesmo sem fome física.', dim:'pistas externas', reverse:false},
+      {id:25, text:'Belisco ou continuo comendo sem perceber bem o momento em que passei do suficiente.', dim:'desinibição', reverse:false},
+      {id:26, text:'Percebo quando alimentos e bebidas estão doces demais para mim.', dim:'consciência alimentar', reverse:false},
+      {id:27, text:'Como para aliviar emoções difíceis, como ansiedade, irritação ou vazio.', dim:'respostas emocionais', reverse:true}
+    ];
+
+    const dimensionHelp = {
+      'consciência alimentar': {
+        low: 'Antes de ampliar técnica, crie condições mínimas de presença. Faça uma pausa breve antes da refeição, observe cor, aroma e textura, e escolha uma refeição do dia para comer sentado(a), sem tela e sem pressa.',
+        mid: 'Você já acessa parte da experiência alimentar, mas pode fortalecer interioridade e presença. Tente nomear o que percebe nos três primeiros bocados e notar quando o prazer muda ao longo do prato.',
+        high: 'Sua capacidade de presença está preservada nessa dimensão. Use isso como recurso estabilizador em dias de mais demanda, autocrítica ou excesso de estímulos.'
+      },
+      'desinibição': {
+        low: 'Quando a desinibição está baixa, vale investigar se houve restrição rígida, fome acumulada, ambiente caótico ou autocrítica antes do episódio. Trabalhe regularidade alimentar, autorização para comer e pausas intermediárias, em vez de mais controle duro.',
+        mid: 'Há alguma oscilação entre saciedade e impulso. Planejar intervalos regulares, evitar chegar com fome extrema e reduzir lógica de “já estraguei” costuma ajudar mais do que compensação.',
+        high: 'Seu freio interno parece mais disponível. Preserve flexibilidade sem cair em regras rígidas; autorregulação estável costuma ser mais útil que autocontrole severo.'
+      },
+      'pistas externas': {
+        low: 'Ambiente, disponibilidade e design do contexto parecem ter muito peso. Decidir antes o que vai pedir, reduzir multitarefa e fazer um check-in de fome antes de repetir pode devolver margem de escolha.',
+        mid: 'Você percebe parte dos gatilhos, mas alguns contextos ainda capturam a decisão alimentar. Nomeie o gatilho predominante: oferta, companhia, estética, celebração ou velocidade do ambiente.',
+        high: 'Você parece reconhecer bem a influência do ambiente. Continue diferenciando vontade evocada por contexto de necessidade corporal real.'
+      },
+      'respostas emocionais': {
+        low: 'Aqui o foco não é força de vontade, e sim regulação. Antes de intervir no comer, experimente nomear a emoção, validar o estado do sistema e oferecer uma pausa de cuidado não punitiva: água, respiração, apoio, companhia ou descanso breve.',
+        mid: 'Há associação intermediária entre emoção e comida. Um registro simples do contexto emocional pode ajudar a separar fome, alívio, busca de conforto e exaustão.',
+        high: 'Você demonstra melhor discriminação entre emoção e fome. Mantenha práticas de autorregulação especialmente em dias de saturação ou conflito relacional.'
+      },
+      'distração': {
+        low: 'Se a refeição acontece no piloto automático, não tente consertar tudo de uma vez. Comece por uma refeição por dia sem celular, com talheres pousados entre bocados e uma pergunta simples no meio do prato: “como meu corpo está agora?”.',
+        mid: 'Há atenção razoável, mas a pressa ainda invade a refeição. Reduzir telas e criar um início de refeição mais lento pode aumentar presença sem gerar cobrança.',
+        high: 'Sua presença durante o comer está relativamente protegida. Preserve isso em contextos sociais, dias corridos e refeições fora de casa.'
+      }
+    };
+
+    const options = [
+      {label:'Nunca / raramente', value:1},
+      {label:'Às vezes', value:2},
+      {label:'Frequentemente', value:3},
+      {label:'Geralmente / sempre', value:4}
+    ];
+
+    const dimensionOrder = ['consciência alimentar','desinibição','pistas externas','respostas emocionais','distração'];
+    const form = document.getElementById('meq-form');
+    const dimensionResults = document.getElementById('dimensionResults');
+    const overallScore = document.getElementById('overallScore');
+    const overallText = document.getElementById('overallText');
+    const personalizedPractices = document.getElementById('personalizedPractices');
+    let lastResult = null;
+
+    function renderForm(){
+      form.innerHTML = items.map(item => `
+        <fieldset class="question-card">
+          <legend class="tag">Item ${item.id} · ${item.dim}</legend>
+          <h3>${item.text}</h3>
+          <div class="options" role="radiogroup" aria-label="Item ${item.id}">
+            ${options.map(opt => `
+              <div class="opt">
+                <input id="q${item.id}_${opt.value}" type="radio" name="q${item.id}" value="${opt.value}">
+                <label for="q${item.id}_${opt.value}">${opt.label}</label>
+              </div>
+            `).join('')}
+          </div>
+        </fieldset>
+      `).join('');
+    }
+
+    function level(score){
+      if (score < 2) return {name:'Muito baixo', tone:'low'};
+      if (score < 2.8) return {name:'Baixo', tone:'low'};
+      if (score < 3.4) return {name:'Moderado', tone:'mid'};
+      return {name:'Alto', tone:'high'};
+    }
+
+    function colorFor(tone){
+      if (tone === 'high') return 'var(--color-success)';
+      if (tone === 'mid') return 'var(--color-blue)';
+      return 'var(--color-warning)';
+    }
+
+    function readAnswers(){
+      const answered = {};
+      items.forEach(item => {
+        const checked = form.querySelector(`input[name="q${item.id}"]:checked`);
+        if (checked) answered[item.id] = Number(checked.value);
+      });
+      return answered;
+    }
+
+    function scoreItem(item, raw){ return item.reverse ? (5 - raw) : raw; }
+
+    function interpretDimension(dim, lv){
+      const text = {
+        'consciência alimentar': {
+          'Muito baixo':'Mostra pouca conexão com sinais sensoriais, corpo e experiência da refeição.',
+          'Baixo':'Indica percepção limitada de sabor, presença e efeitos da comida no corpo e no humor.',
+          'Moderado':'Sugere atenção parcial ao ato de comer, com espaço para ampliar presença.',
+          'Alto':'Mostra boa capacidade de notar sabores, sinais corporais e experiência alimentar.'
+        },
+        'desinibição': {
+          'Muito baixo':'Sugere grande dificuldade para interromper a ingestão quando entram prazer, oferta ou impulso.',
+          'Baixo':'Indica tendência relevante a continuar comendo além da saciedade em certos contextos.',
+          'Moderado':'Mostra algum equilíbrio, embora ainda haja situações de perda parcial de freio alimentar.',
+          'Alto':'Sugere melhor regulação diante de porções, preferência e saciedade.'
+        },
+        'pistas externas': {
+          'Muito baixo':'Indica forte influência do ambiente sobre o comer, com menor margem de escolha diante de estímulos.',
+          'Baixo':'Mostra sensibilidade importante a contexto, disponibilidade e estímulos alimentares.',
+          'Moderado':'Sugere percepção razoável da influência ambiental, mas ainda com vulnerabilidades.',
+          'Alto':'Mostra boa capacidade de perceber quando o ambiente puxa o comportamento alimentar.'
+        },
+        'respostas emocionais': {
+          'Muito baixo':'Sugere que emoções difíceis frequentemente conduzem o comportamento alimentar.',
+          'Baixo':'Indica relação importante entre estados emocionais e ingestão alimentar.',
+          'Moderado':'Mostra influência emocional intermediária, com espaço para maior autorregulação.',
+          'Alto':'Sugere melhor discriminação entre emoção e fome, com menos comer para aliviar afetos.'
+        },
+        'distração': {
+          'Muito baixo':'Mostra refeição muito automatizada, rápida ou dividida com outras tarefas.',
+          'Baixo':'Indica multitarefa relevante e pouca atenção plena durante as refeições.',
+          'Moderado':'Sugere atenção razoável, ainda com interrupções por pressa ou distração.',
+          'Alto':'Mostra boa presença mental durante o ato de comer.'
+        }
+      };
+      return text[dim][lv];
+    }
+
+    function getContextFlags(){
+      const text = document.getElementById('clinicalNotes').value.toLowerCase();
+      return {
+        ta: /transtorno alimentar|ta\b|anore|bulimi|compuls|restri/.test(text),
+        fora: /fora|restaurante|evento|festa|buffet|viagem/.test(text),
+        autocritica: /autocr[ií]tica|culpa|vergonha|controle|rigidez/.test(text),
+        digital: /tela|celular|digital|trabalho|correria|demanda|pressa/.test(text),
+        hiper: /hiperadapta|agrada|n[oã]o consigo dizer n[aã]o|sobrecar/.test(text)
+      };
+    }
+
+    function buildPersonalizedPractices(dimScores){
+      const flags = getContextFlags();
+      const sorted = [...dimScores].sort((a,b)=>a.avg-b.avg);
+      const weakest = sorted[0];
+      const suggestions = [];
+
+      if (weakest) {
+        suggestions.push({
+          title:`Foco principal: ${weakest.dim}`,
+          text:`Nesta fase, a prioridade clínica parece ser ${weakest.dim}. Em vez de buscar desempenho alimentar ideal, vale construir pequenas condições de segurança e presença nessa área específica.`
+        });
+      }
+
+      if (flags.ta) {
+        suggestions.push({
+          title:'Histórico de transtorno alimentar',
+          text:'Com esse contexto, convém evitar leituras moralizantes da pontuação. Se houver desinibição baixa, investigue restrição cognitiva, compensação, medo de perder controle e culpa após comer, sobretudo antes de recomendar mais vigilância interna.'
+        });
+      }
+
+      if (flags.fora) {
+        suggestions.push({
+          title:'Comer fora de casa',
+          text:'Se a dificuldade aparece mais fora, trate isso como vulnerabilidade contextual e não como defeito de caráter. Pode ajudar decidir a refeição antes, chegar com fome moderada, sentar longe de estímulos excessivos e inserir uma pausa no meio do prato para revisar fome, prazer e saciedade.'
+        });
+      }
+
+      if (flags.autocritica) {
+        suggestions.push({
+          title:'Autocrítica e culpa alimentar',
+          text:'Quando a voz interna é muito dura, a intervenção pode começar por linguagem menos acusatória. Trocar “perdi o controle” por “houve um contexto de alta ativação e pouca margem” costuma reduzir vergonha e aumentar capacidade de observação.'
+        });
+      }
+
+      if (flags.digital) {
+        suggestions.push({
+          title:'Ambiente digital e pressa',
+          text:'Se telas, correria ou demanda crônica atravessam a alimentação, uma meta realista é proteger uma refeição por dia do ambiente de urgência. Não como ritual idealizado, mas como microespaço de recuperação do sistema.'
+        });
+      }
+
+      if (flags.hiper) {
+        suggestions.push({
+          title:'Hiperadaptação e autoabandono',
+          text:'Quando a rotina é organizada em torno de responder a tudo e a todos, o comer pode virar continuação da pressa. Vale observar se a dificuldade alimentar aparece quando a pessoa só se autoriza a perceber o corpo tarde demais.'
+        });
+      }
+
+      if (suggestions.length < 3 && weakest) {
+        suggestions.push({
+          title:'Prática de observação clínica',
+          text:'Durante uma semana, registre em poucas palavras: onde estava, com quem estava, nível de fome antes de comer, emoção predominante e momento em que notou saciedade. O objetivo é produzir precisão, não vigilância excessiva.'
+        });
+      }
+
+      return suggestions.slice(0,4);
+    }
+
+    function calculate(){
+      const answers = readAnswers();
+      const totalAnswered = Object.keys(answers).length;
+      if (!totalAnswered) {
+        overallScore.textContent = '—';
+        overallText.textContent = 'Responda ao menos um item para calcular a média.';
+        dimensionResults.innerHTML = '';
+        personalizedPractices.innerHTML = '<div class="practice"><strong>Práticas personalizadas</strong><p class="note">As sugestões aparecerão conforme o resultado, combinando a dimensão mais vulnerável com o contexto informado.</p></div>';
+        lastResult = null;
+        return;
+      }
+
+      const dims = {};
+      items.forEach(item => {
+        if (!(item.id in answers)) return;
+        const scored = scoreItem(item, answers[item.id]);
+        if (!dims[item.dim]) dims[item.dim] = [];
+        dims[item.dim].push(scored);
+      });
+
+      const allScores = Object.entries(answers).map(([id, raw]) => {
+        const item = items.find(i => i.id === Number(id));
+        return scoreItem(item, raw);
+      });
+
+      const overall = allScores.reduce((a,b)=>a+b,0) / allScores.length;
+      const overallLevel = level(overall);
+      overallScore.textContent = overall.toFixed(2).replace('.', ',');
+      overallText.textContent = `${totalAnswered} de 27 itens respondidos. Nível geral ${overallLevel.name.toLowerCase()} de comer consciente.`;
+
+      const dimScores = dimensionOrder.map(dim => {
+        const values = dims[dim] || [];
+        const avg = values.length ? values.reduce((a,b)=>a+b,0) / values.length : null;
+        return {dim, avg, level: avg ? level(avg) : null};
+      });
+
+      dimensionResults.innerHTML = dimScores.map(({dim, avg, level:lv}) => {
+        if (avg == null) {
+          return `<div class="dim"><div class="dim-top"><strong>${dim}</strong><span class="badge">Sem dados</span></div><p class="note">Responda itens desta dimensão para receber interpretação.</p></div>`;
+        }
+        const width = (avg / 4) * 100;
+        const advice = dimensionHelp[dim][lv.tone];
+        return `
+          <article class="dim">
+            <div class="dim-top">
+              <strong>${dim}</strong>
+              <span class="badge" style="color:${colorFor(lv.tone)}">${avg.toFixed(2).replace('.', ',')} · ${lv.name}</span>
+            </div>
+            <div class="meter" aria-hidden="true"><span style="width:${width}%; background:${colorFor(lv.tone)}"></span></div>
+            <p class="note"><strong>Interpretação:</strong> ${interpretDimension(dim, lv.name)}</p>
+            <p class="note"><strong>Sugestão prática:</strong> ${advice}</p>
+          </article>
+        `;
+      }).join('');
+
+      const practices = buildPersonalizedPractices(dimScores.filter(d => d.avg != null));
+      personalizedPractices.innerHTML = practices.map(p => `<div class="practice"><strong>${p.title}</strong><p class="note">${p.text}</p></div>`).join('');
+
+      lastResult = { overall, overallLevel, dimScores, practices, totalAnswered };
+    }
+
+    function buildReportHtml(){
+      if (!lastResult) return '';
+      const client = document.getElementById('clientName').value || 'Não informado';
+      const psychologist = document.getElementById('psychologistName').value || 'Não informado';
+      const notes = document.getElementById('clinicalNotes').value || 'Sem observações adicionais.';
+      return `
+        <h1>Relatório · Calculadora MEQ</h1>
+        <p><strong>Cliente:</strong> ${escapeHtml(client)}</p>
+        <p><strong>Psicóloga:</strong> ${escapeHtml(psychologist)}</p>
+        <p><strong>Itens respondidos:</strong> ${lastResult.totalAnswered} de 27</p>
+        <p><strong>Pontuação geral:</strong> ${lastResult.overall.toFixed(2).replace('.', ',')} / 4 (${lastResult.overallLevel.name})</p>
+        <h2>Leitura clínica</h2>
+        <p>Esta leitura busca compreender o comportamento alimentar com mais precisão e menos culpa, observando sinais de presença, influência do ambiente, estados emocionais, distração e momentos de perda de freio alimentar.</p>
+        <h2>Dimensões</h2>
+        <ul>
+          ${lastResult.dimScores.filter(d=>d.avg!=null).map(d => `<li><strong>${escapeHtml(d.dim)}:</strong> ${d.avg.toFixed(2).replace('.', ',')} (${d.level.name}) — ${escapeHtml(interpretDimension(d.dim, d.level.name))}</li>`).join('')}
+        </ul>
+        <h2>Práticas personalizadas</h2>
+        <ul>
+          ${lastResult.practices.map(p => `<li><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.text)}</li>`).join('')}
+        </ul>
+        <h2>Observações clínicas</h2>
+        <p>${escapeHtml(notes)}</p>
+      `;
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+    }
+
+    async function exportPDF(){
+      calculate();
+      if (!lastResult) return;
+      const report = document.getElementById('pdfReport');
+      report.innerHTML = buildReportHtml();
+      const client = (document.getElementById('clientName').value || 'cliente').trim().replace(/\s+/g,'-').toLowerCase();
+      const opt = {
+        margin: 10,
+        filename: `relatorio-meq-${client}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      await html2pdf().set(opt).from(report).save();
+    }
+
+    function sendToPsychologist(){
+      calculate();
+      if (!lastResult) return;
+      const email = document.getElementById('psychologistEmail').value.trim();
+      const client = document.getElementById('clientName').value || 'Cliente';
+      const subject = encodeURIComponent(`Resumo MEQ - ${client}`);
+      const dims = lastResult.dimScores.filter(d=>d.avg!=null).map(d => `- ${d.dim}: ${d.avg.toFixed(2).replace('.', ',')} (${d.level.name})`).join('%0D%0A');
+      const practices = lastResult.practices.map(p => `- ${p.title}: ${p.text}`).join('%0D%0A');
+      const body = encodeURIComponent(
+`Resumo da calculadora MEQ\n\nCliente: ${client}\nPontuação geral: ${lastResult.overall.toFixed(2).replace('.', ',')} / 4 (${lastResult.overallLevel.name})\n\nDimensões:\n${decodeURIComponent(dims)}\n\nPráticas personalizadas:\n${decodeURIComponent(practices)}\n\nObservações clínicas:\n${document.getElementById('clinicalNotes').value || 'Sem observações.'}`);
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calculate);
+    document.getElementById('pdfBtn').addEventListener('click', exportPDF);
+    document.getElementById('sendBtn').addEventListener('click', sendToPsychologist);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      form.reset();
+      document.getElementById('clientName').value = '';
+      document.getElementById('psychologistName').value = '';
+      document.getElementById('psychologistEmail').value = '';
+      document.getElementById('clinicalNotes').value = '';
+      calculate();
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+    form.addEventListener('change', calculate);
+    ['clinicalNotes','clientName','psychologistName','psychologistEmail'].forEach(id => document.getElementById(id).addEventListener('input', calculate));
+
+    (function(){
+      const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+      let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+      r.setAttribute('data-theme',d);
+      function paint(){
+        t.setAttribute('aria-label','Alternar para modo '+(d==='dark'?'claro':'escuro'));
+        t.innerHTML=d==='dark'
+          ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+          : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+      }
+      paint();
+      t.addEventListener('click',()=>{d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);paint();});
+    })();
+
+    renderForm();
+    calculate();
+  </script>
+</body>
+</html>
