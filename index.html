@@ -43,8 +43,7 @@
     .header-inner{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-4) 0}
     .brand{display:flex;align-items:center;gap:var(--space-3)}
     .brand-lockup{display:flex;align-items:center;gap:var(--space-3);text-decoration:none;color:inherit}
-    .brand-logo{width:min(280px,52vw);height:auto;filter:drop-shadow(0 6px 18px color-mix(in oklab,var(--color-primary) 12%, transparent))}
-    .brand-mark{width:54px;height:54px;object-fit:contain;border-radius:18px;background:var(--color-surface-2);padding:6px;border:1px solid color-mix(in oklab,var(--color-text) 8%, transparent)}
+    .brand-logo{width:min(320px,56vw);height:auto;filter:drop-shadow(0 6px 18px color-mix(in oklab,var(--color-primary) 12%, transparent))}
     .brand h1{font-family:var(--font-display);font-size:var(--text-xl);line-height:1;letter-spacing:.01em;font-weight:600}
     .brand-meta{display:grid;gap:2px}
     .brand-site{font-size:var(--text-xs);color:var(--color-text-muted);text-decoration:none}
@@ -114,7 +113,8 @@
     <div class="container header-inner">
       <div class="brand">
         <a class="brand-lockup" href="https://www.psicoterapiaeafins.com.br" target="_blank" rel="noopener noreferrer" aria-label="Abrir site Psicoterapia e Afins">
-          <img class="brand-logo" src="./Logo-nova.jpg" alt="Logo Psicoterapia e Afins" width="440" height="120">
+          <div class="brand-meta">
+            <img class="brand-logo" src="./Logo-nova.jpg" alt="Logo Psicoterapia e Afins" width="440" height="120">
             <span class="brand-site">www.psicoterapiaeafins.com.br</span>
           </div>
         </a>
@@ -179,6 +179,11 @@
             <p class="note">1,0–1,9 muito baixo; 2,0–2,7 baixo; 2,8–3,3 moderado; 3,4–4,0 alto. Use as faixas como referência clínica leve, não como diagnóstico.</p>
           </div>
 
+          <div class="callout">
+            <strong>Referência científica do instrumento</strong>
+            <p class="note">Framson, C., Kristal, A. R., Schenk, J. M., Littman, A. J., Zeliadt, S., & Benitez, D. (2009). Development and validation of the Mindful Eating Questionnaire. <em>Journal of the American Dietetic Association, 109</em>(8), 1439–1444. https://doi.org/10.1016/j.jada.2009.05.006</p>
+          </div>
+
           <div id="dimensionResults"></div>
 
           <section class="personalized" id="personalizedPractices">
@@ -199,6 +204,7 @@
             </div>
             <a href="https://www.psicoterapiaeafins.com.br" target="_blank" rel="noopener noreferrer">Visitar site</a>
           </div>
+
           <p class="note">Enviar para a psicóloga abre o e-mail padrão do dispositivo com um resumo estruturado. O PDF organiza dados, dimensões e práticas sugeridas para prontuário, devolutiva ou acompanhamento.</p>
         </div>
       </aside>
@@ -501,6 +507,8 @@
         <p><strong>Pontuação geral:</strong> ${lastResult.overall.toFixed(2).replace('.', ',')} / 4 (${lastResult.overallLevel.name})</p>
         <h2>Leitura clínica</h2>
         <p>Esta leitura busca compreender o comportamento alimentar com mais precisão e menos culpa, observando sinais de presença, influência do ambiente, estados emocionais, distração e momentos de perda de freio alimentar.</p>
+        <h2>Referência científica</h2>
+        <p>Framson, C., Kristal, A. R., Schenk, J. M., Littman, A. J., Zeliadt, S., &amp; Benitez, D. (2009). <em>Development and validation of the Mindful Eating Questionnaire</em>. Journal of the American Dietetic Association, 109(8), 1439–1444. https://doi.org/10.1016/j.jada.2009.05.006</p>
         <h2>Dimensões</h2>
         <ul>
           ${lastResult.dimScores.filter(d=>d.avg!=null).map(d => `<li><strong>${escapeHtml(d.dim)}:</strong> ${d.avg.toFixed(2).replace('.', ',')} (${d.level.name}) — ${escapeHtml(interpretDimension(d.dim, d.level.name))}</li>`).join('')}
@@ -543,7 +551,19 @@
       const dims = lastResult.dimScores.filter(d=>d.avg!=null).map(d => `- ${d.dim}: ${d.avg.toFixed(2).replace('.', ',')} (${d.level.name})`).join('%0D%0A');
       const practices = lastResult.practices.map(p => `- ${p.title}: ${p.text}`).join('%0D%0A');
       const body = encodeURIComponent(
-`Resumo da calculadora MEQ\n\nCliente: ${client}\nPontuação geral: ${lastResult.overall.toFixed(2).replace('.', ',')} / 4 (${lastResult.overallLevel.name})\n\nDimensões:\n${decodeURIComponent(dims)}\n\nPráticas personalizadas:\n${decodeURIComponent(practices)}\n\nObservações clínicas:\n${document.getElementById('clinicalNotes').value || 'Sem observações.'}`);
+`Resumo da calculadora MEQ
+
+Cliente: ${client}
+Pontuação geral: ${lastResult.overall.toFixed(2).replace('.', ',')} / 4 (${lastResult.overallLevel.name})
+
+Dimensões:
+${decodeURIComponent(dims)}
+
+Práticas personalizadas:
+${decodeURIComponent(practices)}
+
+Observações clínicas:
+${document.getElementById('clinicalNotes').value || 'Sem observações.'}`);
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
